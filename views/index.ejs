@@ -4,59 +4,225 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <title>Event Management System</title>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script src="/js/sidebar.js"></script>
+    <script>
+        // Razorpay configuration
+        const razorpayKeyId = '<%= razorpayKeyId %>';
+        console.log('Razorpay Key:', razorpayKeyId); // For debugging
+        if (!razorpayKeyId) {
+            console.error('Razorpay key is not properly configured');
+        }
+    </script>
+    <script src="/js/script.js" defer></script>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>Event Management System</h1>
+            <div class="header-content">
+                <h1>Event Management System</h1>
+                <button id="themeToggle" class="theme-toggle">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
         </header>
 
-        <main>
-            <section class="event-form">
-                <h2>Add New Event</h2>
-                <form action="/add-event" method="POST">
-                    <div class="form-group">
-                        <input type="text" name="name" id="name" required>
-                        <label for="name">Event Name</label>
+        <div class="main-content">
+            <!-- Sidebar with Events -->
+            <aside class="sidebar">
+                <!-- Toggle button will be inserted by JavaScript -->
+                <div class="sidebar-section">
+                    <div class="search-container">
+                        <input type="text" id="eventSearch" class="search-input" placeholder="Search events...">
+                        <i class="fas fa-search search-icon"></i>
                     </div>
-                    <div class="form-group">
-                        <input type="date" name="date" id="date" required>
-                        <label for="date">Date</label>
-                    </div>
-                    <div class="form-group">
-                        <input type="time" name="time" id="time" required>
-                        <label for="time">Time</label>
-                    </div>
+                    <h2>📅 Upcoming Events</h2>
+                    <% if (upcomingEvents && upcomingEvents.length > 0) { %>
+                        <div class="event-list-sidebar">
+                            <% upcomingEvents.forEach(event => { %>
+                                <div class="sidebar-event-card">
+                                    <h3><%= event.name %></h3>
+                                    <p class="event-date"><%= new Date(event.date).toLocaleDateString() %></p>
+                                    <p class="event-time"><%= event.startTime %> - <%= event.endTime %></p>
+                                    <p class="event-category"><%= event.category %></p>
+                                    <p class="event-type"><%= event.eventType %></p>
+                                    <p class="event-organizer">By: <%= event.organizerName %></p>
+                                </div>
+                            <% }); %>
+                        </div>
+                    <% } else { %>
+                        <p>No upcoming events</p>
+                    <% } %>
+                </div>
+
+                <div class="sidebar-section">
+                    <h2>✅ Completed Events</h2>
+                    <% if (completedEvents && completedEvents.length > 0) { %>
+                        <div class="event-list-sidebar">
+                            <% completedEvents.forEach(event => { %>
+                                <div class="sidebar-event-card">
+                                    <h3><%= event.name %></h3>
+                                    <p class="event-date"><%= new Date(event.date).toLocaleDateString() %></p>
+                                    <p class="event-time"><%= event.startTime %> - <%= event.endTime %></p>
+                                    <p class="event-category"><%= event.category %></p>
+                                    <p class="event-type"><%= event.eventType %></p>
+                                    <p class="event-organizer">By: <%= event.organizerName %></p>
+                                </div>
+                            <% }); %>
+                        </div>
+                    <% } else { %>
+                        <p>No completed events</p>
+                    <% } %>
+                </div>
+            </aside>
+
+            <!-- Main Form Section -->
+            <main>
+                <section class="event-form">
+                    <h2>📝 Event Registration Form</h2>
+                    <p class="form-description">Please fill in the following details to register your event. Fields marked with * are required.</p>
                     
-                    <div class="form-group">
-                        <textarea name="description" id="description" required></textarea>
-                        <label for="description">Event Description</label>
-                    </div>
-
-                    <button type="submit">Add Event</button>
-                </form>
-            </section>
-
-            <section class="event-list">
-                <h2>Upcoming Events</h2>
-                <ul>
-                    <% upcomingEvents.forEach(event => { %>
-                        <li class="event-card">
-                            <div class="event-date-badge">
-                                <span class="month"><%= event.date.toLocaleString('default', { month: 'short' }) %></span>
-                                <span class="day"><%= event.date.getDate() %></span>
+                    <form action="/add-event" method="POST" id="eventForm">
+                        <!-- Basic Information -->
+                        <div class="form-section">
+                            <h3>🧾 Basic Event Information</h3>
+                            <div class="form-group">
+                                <input type="text" name="name" id="name" required>
+                                <label for="name">Event Name*</label>
+                                <span class="help-text">What is the title of your event?</span>
                             </div>
-                            <div class="event-details">
-                                <h3><%= event.name %></h3>
-                                <p class="event-time"><%= event.time %></p>
-                                <p class="event-description"><%= event.description %></p>
+                            <div class="form-group">
+                                <textarea name="description" id="description" maxlength="500" required></textarea>
+                                <label for="description">Event Description*</label>
+                                <span class="help-text">Describe the event, agenda, and highlights. (Max 500 characters)</span>
                             </div>
-                        </li>
-                    <% }); %>
-                </ul>
-            </section>
-        </main>
+                        </div>
+
+                        <!-- Date & Time -->
+                        <div class="form-section">
+                            <h3>📅 Date & Time</h3>
+                            <div class="form-group">
+                                <input type="date" name="date" id="date" required>
+                                <label for="date">Event Date*</label>
+                            </div>
+                            <div class="form-group">
+                                <input type="time" name="startTime" id="startTime" required>
+                                <label for="startTime">Start Time (HH:MM)*</label>
+                            </div>
+                            <div class="form-group">
+                                <input type="time" name="endTime" id="endTime" required>
+                                <label for="endTime">End Time (HH:MM)*</label>
+                            </div>
+                            <div class="form-group">
+                                <input type="text" id="duration" readonly>
+                                <label for="duration">Calculated Duration</label>
+                            </div>
+                        </div>
+
+                        <!-- Location & Format -->
+                        <div class="form-section">
+                            <h3>📍 Location & Format</h3>
+                            <div class="form-group">
+                                <select name="eventType" id="eventType" required>
+                                    <option value="">Select Event Type*</option>
+                                    <option value="Online">Online</option>
+                                    <option value="Offline">Offline</option>
+                                    <option value="Hybrid">Hybrid</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <select name="category" id="category" required>
+                                    <option value="">Select Category*</option>
+                                    <option value="Workshop">Workshop</option>
+                                    <option value="Seminar">Seminar</option>
+                                    <option value="Competition">Competition</option>
+                                    <option value="Cultural">Cultural</option>
+                                    <option value="Networking">Networking</option>
+                                    <option value="Tech Talk">Tech Talk</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+                            <div class="form-group venue-group">
+                                <select name="venue" id="venue">
+                                    <option value="">Select a Venue</option>
+                                </select>
+                                <label for="venue">Venue*</label>
+                            </div>
+                            <div class="form-group online-group">
+                                <input type="url" name="onlineLink" id="onlineLink">
+                                <label for="onlineLink">Online Link (if applicable)</label>
+                            </div>
+                        </div>
+
+                        <!-- Organizer Details -->
+                        <div class="form-section">
+                            <h3>🧑‍💼 Organizer Details</h3>
+                            <div class="form-group">
+                                <input type="text" name="organizerName" id="organizerName" required>
+                                <label for="organizerName">Organizer Name*</label>
+                            </div>
+                            <div class="form-group">
+                                <input type="email" name="organizerEmail" id="organizerEmail" required>
+                                <label for="organizerEmail">Organizer Email*</label>
+                            </div>
+                            <div class="form-group">
+                                <input type="tel" name="contactNumber" id="contactNumber">
+                                <label for="contactNumber">Contact Number</label>
+                            </div>
+                        </div>
+
+                        <!-- Additional Details -->
+                        <div class="form-section">
+                            <h3>📋 Additional Details</h3>
+                            <div class="form-group">
+                                <input type="text" name="tags" id="tags">
+                                <label for="tags">Tags (comma-separated)</label>
+                            </div>
+                            <div class="form-group">
+                                <input type="url" name="posterUrl" id="posterUrl">
+                                <label for="posterUrl">Poster URL</label>
+                            </div>
+                            <div class="form-group">
+                                <input type="number" name="maxParticipants" id="maxParticipants">
+                                <label for="maxParticipants">Maximum Participants</label>
+                            </div>
+                            <div class="form-group checkbox-group">
+                                <input type="checkbox" name="rsvpRequired" id="rsvpRequired">
+                                <label for="rsvpRequired">RSVP Required</label>
+                            </div>
+                        </div>
+
+                        <!-- Payment Details -->
+                        <div class="form-section">
+                            <h3>�� Payment Details</h3>
+                            <div class="form-group">
+                                <input type="text" id="ratePerHour" value="100" readonly>
+                                <label for="ratePerHour">Rate per Hour (₹)</label>
+                            </div>
+                            <div class="form-group">
+                                <input type="text" id="totalAmount" readonly>
+                                <label for="totalAmount">Total Amount (₹)</label>
+                            </div>
+                        </div>
+
+                        <!-- Terms and Conditions -->
+                        <div class="form-section">
+                            <div class="form-group checkbox-group">
+                                <input type="checkbox" name="termsAccepted" id="termsAccepted" required>
+                                <label for="termsAccepted">I agree to the terms and conditions*</label>
+                            </div>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="form-section">
+                            <button type="submit" class="submit-btn">Register Event</button>
+                        </div>
+                    </form>
+                </section>
+            </main>
+        </div>
     </div>
 </body>
 </html>
