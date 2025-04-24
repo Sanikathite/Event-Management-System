@@ -220,6 +220,7 @@ body {
     max-width: 1400px;
     margin: 0 auto;
     padding: 40px 20px;
+    padding-top: 4rem;
 }
 
 /* Header Styles */
@@ -1033,5 +1034,133 @@ input:focus, select:focus, textarea:focus {
         transparent
     );
     animation: shimmer 1.5s infinite;
+}
+
+/* Navigation Bar Styles */
+.navbar {
+    background: var(--glass-background);
+    backdrop-filter: blur(10px);
+    border-bottom: var(--luxury-border);
+    padding: 0.5rem 1rem;
+    position: absolute;
+    top: 0;
+    left: 10;
+    right: 0;
+    z-index: 1000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: var(--premium-shadow);
+    background-color: transparent
+    ;
+}
+
+.nav-brand {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.nav-links {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+}
+
+.nav-link {
+    color: var(--text-color);
+    text-decoration: none;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-md);
+    transition: all 0.3s ease;
+}
+
+.nav-link:hover {
+    background: var(--gradient-primary);
+    color: white;
+    transform: translateY(-2px);
+}
+
+.nav-link.active {
+    background: var(--gradient-primary);
+    color: white;
+}
+
+.admin-link {
+    background: var(--gradient-secondary);
+    color: white;
+}
+
+.admin-link:hover {
+    background: var(--gradient-accent);
+    transform: translateY(-2px);
+}
+
+/* Login Form Styles */
+.login-container {
+    max-width: 400px;
+    margin: 6rem auto 2rem;
+    padding: 2rem;
+    background: var(--glass-background);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--premium-shadow);
+    border: var(--luxury-border);
+    backdrop-filter: blur(10px);
+}
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.login-form h2 {
+    text-align: center;
+    color: var(--primary-color);
+    font-family: var(--font-heading);
+    margin-bottom: 1rem;
+}
+
+.login-form h2 i {
+    margin-right: 0.5rem;
+}
+
+.login-form .form-group {
+    position: relative;
+    margin-bottom: 1rem;
+}
+
+.login-form .form-group input {
+    width: 100%;
+    padding: 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    background: var(--card-background);
+    color: var(--text-color);
+    transition: all 0.3s ease;
+}
+
+.login-form .form-group input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px var(--primary-color-alpha);
+}
+
+.login-form .submit-btn {
+    background: var(--gradient-primary);
+    color: white;
+    padding: 1rem;
+    border: none;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.login-form .submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--premium-shadow);
 }
 

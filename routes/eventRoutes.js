@@ -3,6 +3,7 @@ const router = express.Router();
 const Event = require('../models/Event');
 const Razorpay = require('razorpay');
 const crypto = require('crypto');
+const { sendEventConfirmationEmail } = require('../utils/emailService');
 require('dotenv').config();
 
 // Initialize Razorpay
@@ -148,6 +149,17 @@ router.post('/add-event', async (req, res) => {
 
         // Save event to database
         await newEvent.save();
+
+        // Send confirmation email
+        if (organizerEmail) {
+            try {
+                await sendEventConfirmationEmail(organizerEmail, newEvent);
+            } catch (emailError) {
+                console.error('Email sending failed:', emailError);
+                // Continue with the response even if email fails
+            }
+        }
+
         res.json({ success: true, eventId: newEvent._id });
     } catch (error) {
         console.error(error);

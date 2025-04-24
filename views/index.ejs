@@ -20,12 +20,23 @@
 </head>
 <body>
     <div class="container">
-        <header>
-            <div class="header-content">
-                <h1>Event Management System</h1>
+        <nav class="navbar">
+            
+            <div class="nav-links">
+                <a href="/" class="nav-link active">
+                    <i class="fas fa-home"></i> Home
+                </a>
+                <a href="/admin/login" class="nav-link admin-link">
+                    <i class="fas fa-user-shield"></i> Admin Login
+                </a>
                 <button id="themeToggle" class="theme-toggle">
                     <i class="fas fa-moon"></i>
                 </button>
+            </div>
+        </nav>
+        <header>
+            <div class="header-content">
+                <h1>Event Management System</h1>
             </div>
         </header>
 
@@ -187,10 +198,6 @@
                             <div class="form-group">
                                 <input type="number" name="maxParticipants" id="maxParticipants">
                                 <label for="maxParticipants">Maximum Participants</label>
-                            </div>
-                            <div class="form-group checkbox-group">
-                                <input type="checkbox" name="rsvpRequired" id="rsvpRequired">
-                                <label for="rsvpRequired">RSVP Required</label>
                             </div>
                         </div>
 

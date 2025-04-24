@@ -39,7 +39,6 @@ const eventSchema = new mongoose.Schema({
     
     // Participation
     maxParticipants: { type: Number },
-    rsvpRequired: { type: Boolean, default: false },
     
     // Payment
     ratePerHour: { type: Number, default: 100 },
