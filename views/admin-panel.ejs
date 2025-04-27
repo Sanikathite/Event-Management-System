@@ -105,7 +105,8 @@
                     <i class="fas fa-user-shield"></i> Admin Panel
                 </a>
                 <a href="/admin/logout" class="nav-link">
-                    <i class="fas fa-sign-out-alt"></i> Logout
+                    
+                    <button type="submit" class="logout-btn">Logout</button>
                 </a>
                 <button id="themeToggle" class="theme-toggle">
                     <i class="fas fa-moon"></i>
@@ -116,9 +117,7 @@
         <div class="admin-container">
             <div class="admin-header">
                 <h1>Admin Dashboard</h1>
-                <form action="/admin/logout" method="POST">
-                    <button type="submit" class="logout-btn">Logout</button>
-                </form>
+                
             </div>
 
             <div class="stats-grid">
@@ -206,14 +205,22 @@
     </div>
 
     <script>
+        // Initialize dashboard data
+        window.dashboardData = {
+            categories: <%- JSON.stringify(categoryStats || []) %>,
+            registrations: <%- JSON.stringify(registrationTrends || []) %>,
+            eventTypes: <%- JSON.stringify(eventTypeStats || []) %>,
+            payments: <%- JSON.stringify(paymentStats || []) %>
+        };
+
         // Category Chart
         const categoryCtx = document.getElementById('categoryChart').getContext('2d');
         new Chart(categoryCtx, {
             type: 'pie',
             data: {
-                labels: <%- JSON.stringify(categoryStats.map(c => c._id)) %>,
+                labels: window.dashboardData.categories.map(c => c._id),
                 datasets: [{
-                    data: <%- JSON.stringify(categoryStats.map(c => c.count)) %>,
+                    data: window.dashboardData.categories.map(c => c.count),
                     backgroundColor: [
                         '#3498db', '#2ecc71', '#e74c3c', '#f1c40f',
                         '#9b59b6', '#34495e', '#1abc9c'
@@ -227,17 +234,17 @@
         new Chart(trendCtx, {
             type: 'line',
             data: {
-                labels: <%- JSON.stringify(registrationTrends.map(r => r._id)) %>,
+                labels: window.dashboardData.registrations.map(r => r._id),
                 datasets: [
                     {
                         label: 'Events',
-                        data: <%- JSON.stringify(registrationTrends.map(r => r.count)) %>,
+                        data: window.dashboardData.registrations.map(r => r.count),
                         borderColor: '#3498db',
                         tension: 0.1
                     },
                     {
                         label: 'Revenue (₹)',
-                        data: <%- JSON.stringify(registrationTrends.map(r => r.revenue)) %>,
+                        data: window.dashboardData.registrations.map(r => r.revenue),
                         borderColor: '#2ecc71',
                         tension: 0.1,
                         yAxisID: 'revenue'
@@ -262,9 +269,9 @@
         new Chart(eventTypeCtx, {
             type: 'doughnut',
             data: {
-                labels: <%- JSON.stringify(eventTypeStats.map(t => t._id)) %>,
+                labels: window.dashboardData.eventTypes.map(t => t._id),
                 datasets: [{
-                    data: <%- JSON.stringify(eventTypeStats.map(t => t.count)) %>,
+                    data: window.dashboardData.eventTypes.map(t => t.count),
                     backgroundColor: ['#3498db', '#e74c3c', '#f1c40f']
                 }]
             }
@@ -275,10 +282,10 @@
         new Chart(paymentCtx, {
             type: 'bar',
             data: {
-                labels: <%- JSON.stringify(paymentStats.map(p => p._id)) %>,
+                labels: window.dashboardData.payments.map(p => p._id),
                 datasets: [{
                     label: 'Number of Events',
-                    data: <%- JSON.stringify(paymentStats.map(p => p.count)) %>,
+                    data: window.dashboardData.payments.map(p => p.count),
                     backgroundColor: '#3498db'
                 }]
             },
