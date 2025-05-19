@@ -102,7 +102,7 @@ Stores participant details linked to events.
 ---
 
 ## **Contributors**  
-- **Sahil Kulkarni**
+- **Sanika Thite**
 
 ---
 
